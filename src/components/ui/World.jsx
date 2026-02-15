@@ -3,7 +3,7 @@ import Button from './Button'
 import { FaRegTrashAlt } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
-import { truncate } from '../../utils';
+import { title, truncate } from '../../utils';
 
 
 
@@ -28,7 +28,7 @@ const World = ({ world, onDel }) => {
           <h1 className="font-bold text-xl">{ truncate(name, 20) }</h1>
           <div className="flex gap-2 text-sm">
             <h2>{ version }</h2>
-            <h2>{ mode }</h2>
+            <h2>{ title(mode) }</h2>
             { modded && 
               <h2>Modded</h2>
             }
