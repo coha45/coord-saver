@@ -3,7 +3,7 @@ import World from './World'
 import clsx from 'clsx'
 import { isEmpty } from '../../utils'
 
-const WorldsContainer = ({ worlds = [] }) => {
+const WorldsContainer = ({ worlds = [], delWorld }) => {
   return (
     <div className={clsx("h-[300px] w-full flex flex-col items-center border-2 border-neutral-300 overflow-y-scroll",
       isEmpty(worlds) ? 
@@ -16,7 +16,7 @@ const WorldsContainer = ({ worlds = [] }) => {
                 Press "Add world" to add worlds or import from an existing database.
             </p> : 
             worlds.map((world) => (
-              <World key={world.id} world={world} />
+              <World key={world.id} world={world} onDel={delWorld} />
             ))
         }
     </div>
