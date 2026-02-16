@@ -30,7 +30,7 @@ const New = ({ addWorld }) => {
         <form onSubmit={handleSubmit(handleCreate)} className="flex flex-col items-center justify-center gap-2">
           <div className="flex">
             <label className="w-16 aspect-square bg-neutral-300">
-              <input onChange={(e) => handleUpload(e)} type="file" className="hidden" accept="image/png, image/jpeg" />
+              {/* <input type="file" className="hidden" accept="image/png, image/jpeg" /> */} 
             </label>
             <input { ...register("name", { required : "Name must not be empty", maxLength : 32 }) } type="text" placeholder="World Name" className="p-2 w-full border-2 border-black text-neutral-600" />
           </div>
