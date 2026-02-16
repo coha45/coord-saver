@@ -1,34 +1,35 @@
 import React, { useEffect, useState } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
-import { genId } from './utils'
 import Main from './components/pages/Main'
 import New from './components/pages/New'
 import Edit from './components/pages/Edit'
+import World from './classes/World'
+const { ipcRenderer } = window.require ? window.require("electron") : {}
 
 const App = () => {
   const [worlds, setWorlds] = useState([])
   const nav = useNavigate()
 
-  function addWorld(name, mode, version, modded, icon = "/assets/icn.jpg") {
+  async function addWorld(name, mode, version, modded, icon = "/assets/icn.jpg") {
     if (!name || !mode || !version || !icon) {
-      console.log("hi")
       return
     }
+    const worldObj = new World(name, mode, version, modded, icon)
+    if (ipcRenderer) {
+      await ipcRenderer.invoke("update-data", worldObj) 
+    }
     setWorlds(prevWorlds => [
-      {
-        id : genId(),
-        name,
-        mode,
-        version,
-        modded,
-        icon
-      }, 
+      worldObj, 
       ...prevWorlds
     ])
   }
 
-  function delWorld(id) {
-    setWorlds(prevWorlds => prevWorlds.filter(world => world.id !== id))
+  async function delWorld(id) {
+    const filtered = worlds.filter(world => world.id !== id)
+    if (ipcRenderer) {
+      await ipcRenderer.invoke("update-data", filtered) 
+    }
+    setWorlds(filtered)
   }
 
   useEffect(() => {
