@@ -1,4 +1,5 @@
 import { genId } from "../utils";
+import Coordinate from "./Coordinate";
 
 class World {
     constructor(name, mode, version, modded, icon) {
@@ -12,7 +13,7 @@ class World {
     }
 
     addCoordinate(coordinate) {
-        // IDK
+        this.coordinates.push(coordinate)
     }
 }
 
