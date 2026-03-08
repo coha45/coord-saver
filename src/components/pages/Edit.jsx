@@ -6,8 +6,11 @@ import { useParams } from 'react-router-dom'
 import { versions } from '../../data'
 import { useForm } from 'react-hook-form'
 import CoordinatesContainer from '../ui/CoordinatesContainer'
-import { IoMdAdd } from 'react-icons/io'
 import Coordinate from '../../classes/Coordinate'
+
+import { IoMdAdd } from 'react-icons/io'
+import { IoIosSave } from "react-icons/io";
+
 
 const Edit = ({ getWorld }) => {
   const { id } = useParams()
@@ -64,11 +67,16 @@ const Edit = ({ getWorld }) => {
                 <input { ...register("modded") } type="checkbox" />
                 Modded
               </label>
+              
             </form>
             <CoordinatesContainer coordinates={coordinates} />
           </div>
-          <span className="self-end">
-            <Button variant="success" onClick={handleAdd}>
+          <span className="mt-2 w-3/4 flex justify-center items-center gap-2">
+            <Button full>
+              <IoIosSave />
+              Save
+            </Button>
+            <Button full variant="success" onClick={handleAdd}>
               <IoMdAdd />
               Add
             </Button>
