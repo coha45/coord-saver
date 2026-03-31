@@ -30,8 +30,15 @@ const App = () => {
     return worlds.filter(world => world.id === id)
   }
 
-  function updateWorld() {
-    
+  function updateWorld(id, newWorld) {
+    const world = getWorld(id)
+    const filtered = worlds.filter(world => world.id !== id)
+    for(let i = 0; i < worlds.length; i++) {
+      if (worlds[i].id === id) {
+        setWorlds(prevWorlds => [...filtered, newWorld])
+        return
+      }
+    }
   }
 
   async function delWorld(id) {
@@ -57,7 +64,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Main worlds={worlds} delWorld={delWorld} />} />
         <Route path="/new" element={<New addWorld={addWorld} />} />
-        <Route path="/edit/:id" element={<Edit getWorld={getWorld}/>} />
+        <Route path="/edit/:id" element={<Edit getWorld={getWorld} updateWorld />} />
       </Routes>
     </>
   )

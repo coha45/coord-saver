@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import BackBtn from '../ui/BackBtn'
 import Button from '../ui/Button'
@@ -10,12 +10,14 @@ import Coordinate from '../../classes/Coordinate'
 
 import { IoMdAdd } from 'react-icons/io'
 import { IoIosSave } from "react-icons/io";
+import World from '../ui/World'
 
 
-const Edit = ({ getWorld }) => {
+const Edit = ({ getWorld, updateWorld }) => {
   const { id } = useParams()
   const [curWorld, setCurWorld] = useState(null)
   const [coordinates, setCoordinates] = useState([])
+  const submitRef = useRef()
   const  { register, handleSubmit, reset, formState : { errors } } = useForm()
 
   useEffect(() => {
@@ -34,13 +36,29 @@ const Edit = ({ getWorld }) => {
     setCoordinates(prevCoords => [...prevCoords, coordObj])
   }
 
+  function click() {
+    submitRef.current.click()
+  }
+
+  function onSubmit({ name, mode, version, modded }) {
+    console.log("hi")
+    const newWorld = curWorld
+    newWorld.name = name
+    newWorld.mode = mode
+    newWorld.version = version
+    newWorld.modded = modded
+    newWorld.coordinates = coordinates
+    console.log(newWorld)
+    updateWorld(newWorld)
+  }
+
   return (
     <>
         <BackBtn />
         <div className="h-screen max-h-[600px] max-w-[750px] min-w-[650px] p-10 flex flex-col justify-center gap-2 items-center">
           <h2 className="text-4xl mb-6 font-mcTen">Edit Coordinates</h2>
           <div className="flex items-center justify-center gap-4">
-            <form className="flex flex-col items-center justify-center gap-2 self-start">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center justify-center gap-2 self-start">
               <input type="text" { ...register("name", { required : "Name must not be empty", maxLength : 32 }) } placeholder="World Name" className="p-2 w-full border-2 border-black text-neutral-600" />
               <label className="w-full flex flex-col">
                 <h3 className="font-bold">Gamemode</h3>
@@ -67,12 +85,12 @@ const Edit = ({ getWorld }) => {
                 <input { ...register("modded") } type="checkbox" />
                 Modded
               </label>
-              
+              <button type="submit" ref={submitRef}></button>
             </form>
             <CoordinatesContainer coordinates={coordinates} />
           </div>
           <span className="mt-2 w-3/4 flex justify-center items-center gap-2">
-            <Button full>
+            <Button full onClick={click}>
               <IoIosSave />
               Save
             </Button>
