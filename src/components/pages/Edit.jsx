@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import BackBtn from '../ui/BackBtn'
 import Button from '../ui/Button'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { versions } from '../../data'
 import { useForm } from 'react-hook-form'
 import CoordinatesContainer from '../ui/CoordinatesContainer'
@@ -10,10 +10,11 @@ import Coordinate from '../../classes/Coordinate'
 
 import { IoMdAdd } from 'react-icons/io'
 import { IoIosSave } from "react-icons/io";
-import World from '../ui/World'
 
 
 const Edit = ({ getWorld, updateWorld }) => {
+  const navigate = useNavigate()
+
   const { id } = useParams()
   const [curWorld, setCurWorld] = useState(null)
   const [coordinates, setCoordinates] = useState([])
@@ -29,6 +30,7 @@ const Edit = ({ getWorld, updateWorld }) => {
       modded : world.modded
     })
     setCurWorld(world)
+    setCoordinates(world.coordinates)
   }, [curWorld])
 
   function handleAdd() {
@@ -36,19 +38,14 @@ const Edit = ({ getWorld, updateWorld }) => {
     setCoordinates(prevCoords => [...prevCoords, coordObj])
   }
 
-  function click() {
-    submitRef.current.click()
-  }
-
   function onSubmit({ name, mode, version, modded }) {
-    console.log("hi")
     const newWorld = curWorld
     newWorld.name = name
     newWorld.mode = mode
     newWorld.version = version
     newWorld.modded = modded
     newWorld.coordinates = coordinates
-    console.log(newWorld)
+    navigate("/")
     updateWorld(newWorld)
   }
 
@@ -90,7 +87,7 @@ const Edit = ({ getWorld, updateWorld }) => {
             <CoordinatesContainer coordinates={coordinates} />
           </div>
           <span className="mt-2 w-3/4 flex justify-center items-center gap-2">
-            <Button full onClick={click}>
+            <Button full onClick={() => submitRef.current.click()}>
               <IoIosSave />
               Save
             </Button>
