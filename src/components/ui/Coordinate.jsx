@@ -3,7 +3,15 @@ import { FaRegTrashAlt } from 'react-icons/fa'
 import { MdEdit } from 'react-icons/md'
 import Button from './Button'
 
-const Coordinate = ({ coord }) => {
+const Coordinate = ({ coord, onEdit = () => {}, deleteCoord }) => {
+  function handleEdit() {
+    onEdit(coord)
+  }
+  
+  function handleDelete() {
+    deleteCoord(coord.id)
+  }
+
   return (
     <div className="w-full p-2 flex items-center justify-between border-2 border-neutral-950">
       <h1 className="font-semibold text-xl">{ coord.name }</h1>
@@ -29,10 +37,10 @@ const Coordinate = ({ coord }) => {
         <p>{ coord.biome }</p>
       </div>
       <div className="flex flex-col">
-        <Button icon>
+        <Button icon onClick={handleEdit}>
           <MdEdit />
         </Button>
-        <Button icon variant="danger">  
+        <Button icon variant="danger" onClick={handleDelete}>  
           <FaRegTrashAlt />
         </Button>
       </div>

@@ -10,14 +10,16 @@ import Coordinate from '../../classes/Coordinate'
 
 import { IoMdAdd } from 'react-icons/io'
 import { IoIosSave } from "react-icons/io";
+import Modal from '../ui/Modal'
+import EditCoordinate from './EditCoordinate'
 
-
-const Edit = ({ getWorld, updateWorld }) => {
+const Edit = ({ getWorld = () => {}, updateWorld = () => {}, ref : modalRef }) => {
   const navigate = useNavigate()
 
   const { id } = useParams()
   const [curWorld, setCurWorld] = useState(null)
   const [coordinates, setCoordinates] = useState([])
+  const [curCoord, setCurCoord] = useState(null)
   const submitRef = useRef()
   const  { register, handleSubmit, reset, formState : { errors } } = useForm()
 
@@ -38,6 +40,26 @@ const Edit = ({ getWorld, updateWorld }) => {
     setCoordinates(prevCoords => [...prevCoords, coordObj])
   }
 
+  function updateCoord(newCoord) {
+    const filtered = coordinates.filter(coord => coord.id !== newCoord.id)
+    for(let i = 0; i < coordinates.length; i++) {
+      if (newCoord.id === coordinates[i].id) {
+        setCoordinates([newCoord, ...filtered])
+        break
+      }
+    }
+    modalRef.current.close()
+  }
+  
+  function deleteCoord(id) {
+    setCoordinates(prevCoords => prevCoords.filter(coord => coord.id !== id))
+  }
+
+  function onEdit(coord) {
+    setCurCoord(coord)
+    modalRef.current.open()
+  }
+
   function onSubmit({ name, mode, version, modded }) {
     const newWorld = curWorld
     newWorld.name = name
@@ -51,6 +73,13 @@ const Edit = ({ getWorld, updateWorld }) => {
 
   return (
     <>
+        <Modal ref={modalRef}>
+          {
+            curCoord ? 
+            <EditCoordinate onUpdate={() => modalRef.current.close()} coordinate={curCoord} updateCoord={updateCoord} /> :
+            <p>Nothing here.</p>
+          }
+        </Modal>
         <BackBtn />
         <div className="h-screen max-h-[600px] max-w-[750px] min-w-[650px] p-10 flex flex-col justify-center gap-2 items-center">
           <h2 className="text-4xl mb-6 font-mcTen">Edit Coordinates</h2>
@@ -84,7 +113,7 @@ const Edit = ({ getWorld, updateWorld }) => {
               </label>
               <button type="submit" ref={submitRef}></button>
             </form>
-            <CoordinatesContainer coordinates={coordinates} />
+            <CoordinatesContainer coordinates={coordinates} onEdit={onEdit} deleteCoord={deleteCoord} />
           </div>
           <span className="mt-2 w-3/4 flex justify-center items-center gap-2">
             <Button full onClick={() => submitRef.current.click()}>

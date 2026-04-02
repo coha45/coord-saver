@@ -3,7 +3,7 @@ import React from 'react'
 import { isEmpty } from '../../utils'
 import Coordinate from './Coordinate'
 
-const CoordinatesContainer = ({ coordinates }) => {
+const CoordinatesContainer = ({ coordinates, onEdit, deleteCoord }) => {
   return (
     <div className={clsx("h-[300px] w-3/4 flex flex-col items-center border-2 border-neutral-300 overflow-y-scroll",
         isEmpty(coordinates) ? 
@@ -16,7 +16,7 @@ const CoordinatesContainer = ({ coordinates }) => {
                     No coordinates yet. Start adding by pressing the "add" button.
                 </p> : 
                 coordinates.map(coord => (
-                    <Coordinate key={coord.id} coord={coord} />
+                    <Coordinate key={coord.id} coord={coord} onEdit={onEdit} deleteCoord={deleteCoord}  />
                 ))
             }
     </div>
