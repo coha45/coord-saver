@@ -12,6 +12,7 @@ import { IoMdAdd } from 'react-icons/io'
 import { IoIosSave } from "react-icons/io";
 import Modal from '../ui/Modal'
 import EditCoordinate from './EditCoordinate'
+import AddCoordinate from './AddCoordinate'
 
 const Edit = ({ getWorld = () => {}, updateWorld = () => {}, ref : modalRef }) => {
   const navigate = useNavigate()
@@ -34,10 +35,15 @@ const Edit = ({ getWorld = () => {}, updateWorld = () => {}, ref : modalRef }) =
     setCurWorld(world)
     setCoordinates(world.coordinates)
   }, [curWorld])
-
+  
   function handleAdd() {
-    const coordObj = new Coordinate("Idk", 123, 304, -32, "Biome")
-    setCoordinates(prevCoords => [...prevCoords, coordObj])
+    setCurCoord(null)
+    modalRef.current.open()
+  }
+
+  function addCoord(coord) {
+    setCoordinates(prevCoords => [coord, ...prevCoords])
+    modalRef.current.close()
   }
 
   function updateCoord(newCoord) {
@@ -76,8 +82,8 @@ const Edit = ({ getWorld = () => {}, updateWorld = () => {}, ref : modalRef }) =
         <Modal ref={modalRef}>
           {
             curCoord ? 
-            <EditCoordinate onUpdate={() => modalRef.current.close()} coordinate={curCoord} updateCoord={updateCoord} /> :
-            <p>Nothing here.</p>
+            <EditCoordinate coordinate={curCoord} updateCoord={updateCoord} /> :
+            <AddCoordinate addCoord={addCoord} />
           }
         </Modal>
         <BackBtn />
