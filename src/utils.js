@@ -15,3 +15,11 @@ export const title = (str) => {
     if (str.length <= 1) return str.toUpperCase()
     return str[0].toUpperCase().concat(str.slice(1,str.length))
 }
+
+export const isNumber = (value) => {
+    return typeof value === "number"
+}
+
+export const isValidNum = (value) => {
+    return !isNaN(Number(value))
+}
