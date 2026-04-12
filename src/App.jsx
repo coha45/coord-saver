@@ -11,26 +11,23 @@ const App = () => {
   const [worlds, setWorlds] = useState([])
   const nav = useNavigate()
   const modalRef = useRef()
-  /*
+
   useEffect(() => {
     ipcRenderer.invoke("load-data-from-json").then(data => {
-      console.log(data)
-      setWorlds([data])
-    }).catch(err => console.err(err))
-  }, []) */
+      setWorlds(data)
+    }).catch(err => {console.error(err)})
+  }, []) 
 
   async function addWorld(name, mode, version, modded, icon = "/assets/icn.jpg") {
     if (!name || !mode || !version || !icon) {
       return
     }
     const worldObj = new World(name, mode, version, modded, icon)
+    const newWorlds = [worldObj, ...worlds]
     if (ipcRenderer) {
-      await ipcRenderer.invoke("update-data", worldObj) 
+      await ipcRenderer.invoke("update-data", newWorlds) 
     }
-    setWorlds(prevWorlds => [
-      worldObj, 
-      ...prevWorlds
-    ])
+    setWorlds(newWorlds)
 
     return worldObj.id
   }
@@ -41,11 +38,13 @@ const App = () => {
 
   async function updateWorld(id, newWorld) {
     for(let i = 0; i < worlds.length; i++) {
+      console.log(`id: ${id}`)
       if (worlds[i].id === id) {
         const filtered = worlds.filter(world => world.id !== id)
-        setWorlds([...filtered, newWorld])
+        const newWorlds = [newWorld, ...filtered]
+        setWorlds(newWorlds)
         if (ipcRenderer) {
-          await ipcRenderer.invoke("update-data", filtered) 
+          await ipcRenderer.invoke("update-data", newWorlds) 
         }
         return
       }

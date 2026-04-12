@@ -73,8 +73,8 @@ const Edit = ({ getWorld = () => {}, updateWorld = () => {}, ref : modalRef }) =
     newWorld.version = version
     newWorld.modded = modded
     newWorld.coordinates = coordinates
+    updateWorld(id, newWorld)
     navigate("/")
-    updateWorld(newWorld)
   }
 
   return (

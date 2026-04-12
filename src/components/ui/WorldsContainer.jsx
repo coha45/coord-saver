@@ -1,4 +1,3 @@
-import React from 'react'
 import World from './World'
 import clsx from 'clsx'
 import { isEmpty } from '../../utils'

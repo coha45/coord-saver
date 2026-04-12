@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { versions } from '../../data';
 import { useForm } from 'react-hook-form';
 
-import { IoMdArrowRoundBack } from "react-icons/io";
 import { TiWorld } from "react-icons/ti";
 import { MdEdit } from 'react-icons/md';
 import BackBtn from '../ui/BackBtn';
@@ -16,10 +15,21 @@ const New = ({ addWorld }) => {
   const [file, setFile] = useState("")
   const  { register, handleSubmit, watch, formState : { errors } } = useForm()
 
-  function handleCreate(data) {
+  async function add(data) {
     const { name, mode, version, modded } = data
-    addWorld(name, mode, version, modded)
+    const id = await addWorld(name, mode, version, modded)
+
+    return id
+  }
+
+  async function handleCreate(data) {
+    await add(data)
     nav("/")
+  }
+
+  async function handleEdit(data) {
+    const id = await add(data)
+    nav(`/edit/${id}`)
   }
 
   return (
