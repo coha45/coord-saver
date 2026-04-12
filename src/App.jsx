@@ -1,14 +1,23 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 import Main from './components/pages/Main'
 import New from './components/pages/New'
 import Edit from './components/pages/Edit'
 import World from './classes/World'
+import Modal from './components/ui/Modal'
 const { ipcRenderer } = window.require ? window.require("electron") : {}
 
 const App = () => {
   const [worlds, setWorlds] = useState([])
   const nav = useNavigate()
+  const modalRef = useRef()
+  /*
+  useEffect(() => {
+    ipcRenderer.invoke("load-data-from-json").then(data => {
+      console.log(data)
+      setWorlds([data])
+    }).catch(err => console.err(err))
+  }, []) */
 
   async function addWorld(name, mode, version, modded, icon = "/assets/icn.jpg") {
     if (!name || !mode || !version || !icon) {
@@ -30,12 +39,14 @@ const App = () => {
     return worlds.filter(world => world.id === id)
   }
 
-  function updateWorld(id, newWorld) {
-    const world = getWorld(id)
-    const filtered = worlds.filter(world => world.id !== id)
+  async function updateWorld(id, newWorld) {
     for(let i = 0; i < worlds.length; i++) {
       if (worlds[i].id === id) {
-        setWorlds(prevWorlds => [...filtered, newWorld])
+        const filtered = worlds.filter(world => world.id !== id)
+        setWorlds([...filtered, newWorld])
+        if (ipcRenderer) {
+          await ipcRenderer.invoke("update-data", filtered) 
+        }
         return
       }
     }
@@ -48,10 +59,10 @@ const App = () => {
     }
     setWorlds(filtered)
   }
-
+  
   useEffect(() => {
     const listener = document.addEventListener("keydown", e => {
-      if (e.key === "Escape") {
+      if (e.key === "Escape" && !modalRef.current.isOpen()) {
         nav("/")
       }
     })
@@ -64,7 +75,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Main worlds={worlds} delWorld={delWorld} />} />
         <Route path="/new" element={<New addWorld={addWorld} />} />
-        <Route path="/edit/:id" element={<Edit getWorld={getWorld} updateWorld />} />
+        <Route path="/edit/:id" element={<Edit getWorld={getWorld} updateWorld={updateWorld} ref={modalRef} />} />
       </Routes>
     </>
   )
