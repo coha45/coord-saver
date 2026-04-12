@@ -12,7 +12,7 @@
     "electron:build": "",
     "electron:start": "wait-on tcp:5173 && electron ."
   },
-  "main": "public/main.js",
+  "main": "electron/main.js",
   "dependencies": {
     "clsx": "^2.1.1",
     "concurrently": "^9.2.1",
